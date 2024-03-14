@@ -195,7 +195,7 @@ canvas {
 
             // Convert the color to hex
             const hexColor = rgbToHex(r, g, b);
-            console.log('Hex:', hexColor);
+            o('clr').style.background = hexColor;
         }, 1000); // Adjust interval as needed
     });
 
@@ -224,5 +224,6 @@ canvas {
         </div>
         <video id="video" autoplay></video>
         <canvas id="canvas"></canvas>
+        <div id="clr" style="position:absolute;top:50% - 25px;left:50% - 25px;height:50px;width:50px;border-radius:50%;border:1px solid white;z-index=100;"></div>
     </body>
 </html>

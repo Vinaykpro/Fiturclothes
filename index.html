@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fit ur clothes</title>
+        
+        <style>
+            * {
+     padding:0;
+     margin:0;
+}
+
+body {
+background-image:url(https://i.ibb.co/RvnCSQh/IMG-20240312-201815.jpg);
+    background-repeat:no-repeat;
+    background-size:100vw 100vh;
+}
+
+#config {
+    height:100%;
+    width:100vw;
+    background:rgba(0,0,0,0.7);
+}
+
+h3 {
+   color:white;
+   width:100%;
+   font-size:30px;
+   margin-top:50%;
+   padding-top:15px;
+   text-align:center;
+}
+
+#genders , #btype {
+    display:flex;
+    justify-content:center;
+    align-content:space-between;
+}
+
+.gt {
+    height:30vw;
+    width:30vw;
+    margin:20px;
+}
+
+.bt {
+    height: 20vw;
+    width: 20vw;
+    margin:20px;
+}
+
+#btype {
+    display: none;
+}
+
+#b {
+    position: absolute;
+    top:0;
+    left:0;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+    display: none;
+}
+
+#video {
+    position:absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+}
+canvas {
+    display: none;
+}
+
+        </style>
+        
+        
+        
+        <script>
+            window.onload = () => {
+
+    config =  o("config")
+    genders = o("genders")
+    title = o("stitle")
+    gm = o("gm")
+    gf = o("gf")
+    btype = o("btype")
+    m = false
+    
+    gm.onclick = () => {
+        title.innerHTML = "Choose your body type"
+        genders.style.display="none"
+        btype.style.display="flex"
+        m = true
+    }
+
+    gf.onclick = () => {
+        title.innerHTML = "Choose your body type"
+        genders.style.display="none"
+        btype.style.display="flex"
+        m = false
+    }
+
+    l = o("l")
+    xl = o("xl")
+    xxl = o("xxl")
+    b = o("b")
+
+    l.onclick = () => {
+        config.style.display = "none"
+        bl = ""
+        if(m)
+        bl = "https://i.ibb.co/dMPgztC/ml.png"
+        else
+        bl = "https://i.ibb.co/VCcVQwh/fl.png"
+        b.src = bl
+        b.style.display = "block"
+    }
+
+    xl.onclick = () => {
+        config.style.display = "none"
+        if(m)
+        bl = "https://i.ibb.co/jvk2cfL/mxl.png"
+        else
+        bl = "https://i.ibb.co/HB54ZcX/fxl.png"
+        b.src = bl
+        b.style.display = "block"
+    }
+
+    xxl.onclick = () => {
+        config.style.display = "none"
+        if(m)
+        bl = "https://i.ibb.co/p1Z4smH/mxxl.png"
+        else
+        bl = "https://i.ibb.co/zFy24Q1/fxxl.png"
+        b.src = bl
+        b.style.display = "block"
+    }
+    
+
+    function o(s) {
+        return document.getElementById(s)
+    }
+
+    const video = o('video');
+    const canvas = o('canvas');
+    const context = canvas.getContext('2d');
+
+    // Request access to the camera
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then((stream) => {
+        video.srcObject = stream;
+    })
+    .catch((err) => {
+        console.error('Error accessing the camera:');
+    });
+
+    video.addEventListener('play', () => {
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        setInterval(() => {
+            context.drawImage(video, 0, 0, width, height);
+            const imageData = context.getImageData(0, 0, width, height);
+            const pixelData = imageData.data;
+
+            // Define the point to sample color (center of the video)
+            const centerX = Math.floor(width / 2);
+            const centerY = Math.floor(height / 2);
+            const pixelIndex = (centerY * width + centerX) * 4;
+
+            // Extract RGB values
+            const r = pixelData[pixelIndex];
+            const g = pixelData[pixelIndex + 1];
+            const b = pixelData[pixelIndex + 2];
+
+            // Display the RGB values
+            console.log(`RGB: (${r}, ${g}, ${b})`);
+        }, 100); // Adjust interval as needed
+    });
+}
+        </script>
+        
+    </head>
+    <body>
+        <img id="b" src="https://i.ibb.co/dMPgztC/ml.png" />
+        <div id="config">
+            <h3 id="stitle">Select your Gender</h3>
+            <div id="genders">
+                <img class="gt" id="gm" src="https://i.ibb.co/NKj6yDq/1710255819081.png"/>
+                <img class="gt" id="gf" src="https://i.ibb.co/NVycm00/1710255859530.png"/>
+            </div>
+            <div id="btype">
+                <img class="bt" id="l" src="https://i.ibb.co/kBtDRf1/sizel.png"/>
+                <img class="bt" id="xl" src="https://i.ibb.co/KxMXmzm/sizexl.png"/>
+                <img class="bt" id="xxl" src="https://i.ibb.co/MD0jdSW/sizexxl.png"/>
+            </div>
+        </div>
+        <video id="video" autoplay></video>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>

@@ -150,6 +150,7 @@ canvas {
     const video = o('video');
     const canvas = o('canvas');
     const context = canvas.getContext('2d');
+    const circleRadius = 10; // radius of the circle
 
     // Request access to the camera
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
@@ -157,7 +158,7 @@ canvas {
         video.srcObject = stream;
     })
     .catch((err) => {
-        console.error('Error accessing the camera:');
+        console.error('Error accessing the camera:', err);
     });
 
     video.addEventListener('play', () => {
@@ -175,17 +176,33 @@ canvas {
             // Define the point to sample color (center of the video)
             const centerX = Math.floor(width / 2);
             const centerY = Math.floor(height / 2);
-            const pixelIndex = (centerY * width + centerX) * 4;
+
+            // Draw the circle
+            context.beginPath();
+            context.arc(centerX, centerY, circleRadius, 0, 2 * Math.PI);
+            context.strokeStyle = 'red'; // Circle color
+            context.lineWidth = 2;
+            context.stroke();
 
             // Extract RGB values
+            const pixelIndex = (centerY * width + centerX) * 4;
             const r = pixelData[pixelIndex];
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];
 
             // Display the RGB values
             console.log(`RGB: (${r}, ${g}, ${b})`);
-        }, 100); // Adjust interval as needed
+
+            // Convert the color to hex
+            const hexColor = rgbToHex(r, g, b);
+            console.log('Hex:', hexColor);
+        }, 1000); // Adjust interval as needed
     });
+
+    // Function to convert RGB to HEX
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
 
 }
         </script>

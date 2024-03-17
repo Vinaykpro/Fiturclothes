@@ -84,6 +84,8 @@ canvas {
         <script>
             window.onload = () => {
 
+    var colorname = "Unknown"
+    var clrn = o("clrn")
     config =  o("config")
     genders = o("genders")
     title = o("stitle")
@@ -173,42 +175,78 @@ canvas {
             const imageData = context.getImageData(0, 0, width, height);
             const pixelData = imageData.data;
 
-            // Define the point to sample color (center of the video)
             const centerX = Math.floor(width / 2);
             const centerY = Math.floor(height / 2);
-
-            // Draw the circle
+            
             context.beginPath();
             context.arc(centerX, centerY, circleRadius, 0, 2 * Math.PI);
             context.strokeStyle = 'red'; // Circle color
             context.lineWidth = 2;
             context.stroke();
-
-            // Extract RGB values
+            
             const pixelIndex = (centerY * width + centerX) * 4;
             const r = pixelData[pixelIndex];
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];
-
-            // Display the RGB values
-            console.log(`RGB: (${r}, ${g}, ${b})`);
-
-            // Convert the color to hex
+            
             const hexColor = rgbToHex(r, g, b);
             o('clr').style.background = hexColor;
-        }, 100); // Adjust interval as needed
-    });
 
-    // Function to convert RGB to HEX
+            clrname = getColorName(hexColor);
+            if(clrname!=colorname) {
+                colorname = clrname;
+                clrn.innerHTML = colorname;
+            }
+            
+        }, 100);
+    });
+                
     function rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
+                
+    function getColorName(hexColor) {
+  // Remove "#" if present
+  hexColor = hexColor.replace("#", "");
+
+  // Convert hex to RGB
+  let r = parseInt(hexColor.substring(0, 2), 16);
+  let g = parseInt(hexColor.substring(2, 4), 16);
+  let b = parseInt(hexColor.substring(4, 6), 16);
+
+  // Define predefined colors with their RGB values
+  const predefinedColors = {
+    blue: { r: 0, g: 0, b: 255 },
+    green: { r: 0, g: 128, b: 0 },
+    yellow: { r: 255, g: 255, b: 0 },
+    red: { r: 255, g: 0, b: 0 },
+    white: { r: 255, g: 255, b: 255 },
+    black: { r: 0, g: 0, b: 0 }
+  };
+
+  // Calculate the Euclidean distance between the given color and each predefined color
+  let minDistance = Infinity;
+  let closestColor = "unknown";
+
+  for (const color in predefinedColors) {
+    const predefinedColor = predefinedColors[color];
+    const distance = Math.sqrt(Math.pow(r - predefinedColor.r, 2) + Math.pow(g - predefinedColor.g, 2) + Math.pow(b - predefinedColor.b, 2));
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestColor = color;
+    }
+  }
+
+  return closestColor;
+}
 
 }
         </script>
         
     </head>
     <body>
+        <h1 id="clrn" style="position:absolute;color:white;background:black;top:0;width:100%;text-align:center;">Unknown</h1>
         <img id="b" src="https://i.ibb.co/dMPgztC/ml.png" />
         <div id="config">
             <h3 id="stitle">Select your Gender</h3>

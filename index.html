@@ -76,6 +76,47 @@ h3 {
 canvas {
     display: none;
 }
+            
+#container {
+    position:absolute;
+    bottom:0;
+    margin:10px;
+    height:30vw;
+    width:calc(100vw - 20px);
+    border-radius:20px;
+    background:rgba(255,255,255,0.8);
+    border:0px solid white;
+    display:flex;
+    overflow-x:auto;
+    padding-right:3px;
+    z-index:10;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  
+  80% { 
+  transform: translateY(-20%);
+  }
+  85% { 
+  transform: translateY(-15%);
+  }
+  90% { 
+  transform: translateY(-10%);
+  }
+  to { transform: translateY(0%); }
+}
+
+.item {
+    height: calc(30vw - 6px);
+    width: calc(30vw - 6px);
+    flex-shrink:0;
+    margin:3px;
+    margin-right:0px;
+    background:white;
+    border-radius:17px;
+    bottom:-100%;
+}
 
         </style>
         
@@ -149,6 +190,50 @@ canvas {
         return document.getElementById(s)
     }
 
+    var rs  = {
+  0: ["https://m.media-amazon.com/images/I/61h0+zRTcPL._SX679_.jpg", "https://amzn.eu/d/dLNREx6"],
+  1: ["https://m.media-amazon.com/images/I/51SJBZa4Q8L._SX679_.jpg", "https://amzn.eu/d/iuYPCXX"],
+  2: ["https://m.media-amazon.com/images/I/91qfIhneQSL._SX569_.jpg", "https://amzn.eu/d/31VhgCk"],
+  3: ["https://m.media-amazon.com/images/I/71ujJvq2CzL._SX679_.jpg", "https://amzn.eu/d/9nO17tF"],
+  4: ["https://m.media-amazon.com/images/I/91blYNbUkFL._SY879_.jpg", "https://amzn.eu/d/bK6AEc8"],
+  5: ["https://m.media-amazon.com/images/I/51Ri+3Gxo6L._SY879_.jpg", "https://amzn.eu/d/3b76O7l"],
+  6: ["https://m.media-amazon.com/images/I/81+ap29LFIL._SY879_.jpg", "https://amzn.eu/d/2MkS1WV"],
+  8: ["https://m.media-amazon.com/images/I/51TvT3+lZDL.jpg", "https://amzn.eu/d/4EQKy98"],
+  8: ["https://m.media-amazon.com/images/I/61yATkar4uL._SY741_.jpg", "https://amzn.eu/d/4WRYXSf"],
+  9: ["https://m.media-amazon.com/images/I/71ZGe3YWTVL._SY879_.jpg", "https://amzn.eu/d/8Rcxsu1"],
+};
+
+var bls  = {
+  0: ["https://m.media-amazon.com/images/I/61s3rT63mtL._SX679_.jpg", "https://amzn.eu/d/b7DwOGH"],
+  1: ["https://m.media-amazon.com/images/I/510bAxmzH9L._SX569_.jpg", "https://amzn.eu/d/7YUjHai"],
+  2: ["https://m.media-amazon.com/images/I/51zFNTawmsL._SX679_.jpg", "https://amzn.eu/d/eED7DlK"],
+  3: ["https://m.media-amazon.com/images/I/71zpxIhI7EL._SX679_.jpg", "https://amzn.eu/d/ez8mbQH"],
+  4: ["https://m.media-amazon.com/images/I/41aa2OQ-0YL._SY741_.jpg", "https://amzn.eu/d/1eDiJg9"],
+  5: ["https://m.media-amazon.com/images/I/714ZhKeE-lL._SY879_.jpg", "https://amzn.eu/d/gEb2SMo"],
+  6: ["https://m.media-amazon.com/images/I/71gxzNP0V3L._SY879_.jpg", "https://amzn.eu/d/0PYc9xl"],
+  7: ["https://m.media-amazon.com/images/I/61vrHdwwrZL._SX569_.jpg", "https://amzn.eu/d/8jsTkHX"],
+  8: ["https://m.media-amazon.com/images/I/618AldcT9TL._SY879_.jpg", "https://amzn.eu/d/9xmn4Zg"],
+  9: ["https://m.media-amazon.com/images/I/51D0RRDSG9L._SY879_.jpg", "https://amzn.eu/d/07et9mA"],
+};
+
+var gs = {}
+var bs = {}
+var ys = {}
+var ws = {}
+
+    
+    
+
+c = document.getElementById("container");
+imgs = [];
+
+Object.keys(rs).forEach(key => { 
+let img = document.createElement("img"); img.className = "item";
+img.src = rs[key][0];
+img.onclick = () => { window.open(rs[key][1], "_blank"); }
+imgs.push(img); c.appendChild(img); });
+            
+
     const video = o('video');
     const canvas = o('canvas');
     const context = canvas.getContext('2d');
@@ -196,6 +281,50 @@ canvas {
             if(clrname!=colorname) {
                 colorname = clrname;
                 clrn.innerHTML = colorname;
+
+                t=ws;
+    
+    if(colorname=="red") {
+        t=rs
+    }
+    else if(colorname=="blue") {
+        t=bs
+    }
+    else if(colorname=="green") {
+        t=gs
+    }
+    else if(colorname=="yellow") {
+        t=ys
+    }
+    else if(colorname=="black") {
+        t=bls
+    }
+    else {
+        t=ws
+    }
+    
+    while(c.firstChild) {
+        c.removeChild(c.firstChild);
+    }
+    imgs.splice(0, imgs.length);
+    
+    Object.keys(t).forEach(key => { 
+let img = document.createElement("img"); img.className = "item";
+img.src = t[key][0];
+img.onclick = () => { window.open(t[key][1], "_blank"); }
+imgs.push(img); c.appendChild(img); });
+    
+    for(let i=0;i<imgs.length;i++) {
+        c.scrollLeft=0;
+        imgs[i].style.animation = "none";
+        imgs[i].offsetHeight;
+        imgs[i].style.animation = "slideUp "+0.2*(i+1)+"s ease"
+    }
+}
+
+
+
+            
             }
             
         }, 100);
@@ -263,5 +392,6 @@ canvas {
         <video id="video" autoplay></video>
         <canvas id="canvas"></canvas>
         <div id="clr" style="position:absolute;margin-top:-25px;margin-left:-25px;top:50vh;left:50vw;height:50px;width:50px;border-radius:50%;border:1px solid white;z-index=100;"></div>
+        <div id="container"></div>
     </body>
 </html>
